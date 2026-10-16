@@ -19,11 +19,13 @@
 ## 模型
 
 - 模型：`nvidia/Nemotron-3-Diarization`（端到端流式，8 说话人，10 ms 输出）
-- 量化：2 张拆图 axmodel（`preencode` + `encoder`），U16 激活 / S8 权重；两档流式配置：
+- 量化：8 张拆图 axmodel（4 图 × NPU3 / NPU2 两个核数版本），U16 激活 / S8 权重；两档流式配置：
   - **offline**（精度优先）：输入缓冲 30.4 s（chunk 340 + right context 40 帧 @ 80 ms，
     spkcache 264 / fifo 40）；逐算子精度 encoder min cosine 0.9953 / mean 0.9989
   - **low latency**（实时流式）：输入缓冲 ~0.8 s（chunk 6 + right context 4，
     spkcache 264 / fifo 264，update 222）；逐算子精度 encoder min cosine 0.9588 / mean 0.9977
+  - **NPU2 版**（`*_npu2.axmodel`）：同量化参数，仅编译期调度改为双核；输出与 NPU3 版逐帧一致
+    （maxdiff 0），单步耗时更高，适合同一 NPU 上与其他模型并跑（留 1 核）
 - 主机侧：与 NeMo 对齐的 log-mel 前端（复用检查点内量化的 hann 窗/滤波器组）、
   `streaming_update` AOSC 状态机（learnable silence embedding）、high-res→80 ms
   降采样与后处理（纯 numpy）
@@ -86,10 +88,12 @@ python python/example.py meeting.wav out.rttm
 
 性能（AX650N，主机 CPU 前端 + NPU 编码器）：
 
-| 配置 | Python RTF | C++ RTF | C++ ms/步 | 单步 MACs |
-|---|---|---|---|---|
-| offline（seq 684 × 31 层） | 0.0096 | **0.0066** | 177 | 194.6 GMACs |
-| low latency（seq 538 × 31 层） | 0.189 | **0.179** | 85.9 | 143.1 GMACs |
+| 配置 | 版本 | Python RTF | C++ RTF | C++ ms/步 | 单步 MACs |
+|---|---|---|---|---|---|
+| offline（seq 684 × 31 层） | NPU3 | 0.0096 | **0.0066** | 177 | 194.6 GMACs |
+| offline | NPU2 | — | 0.0075 | 201 | 194.6 GMACs |
+| low latency（seq 538 × 31 层） | NPU3 | 0.189 | **0.179** | 85.9 | 143.1 GMACs |
+| low latency | NPU2 | — | 0.338 | 162 | 143.1 GMACs |
 
 参考：NeMo FP32 基线 RTF≈0.0017（offline）/ 0.062（low latency）（L4 GPU，未编译）。
 

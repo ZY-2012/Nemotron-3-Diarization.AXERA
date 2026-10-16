@@ -84,10 +84,15 @@ python ../model_convert/compress_math_parity.py   # 首次压缩：选帧零差�
 
 | 实现 | 配置 | RTF | ms/步 |
 |---|---|---|---|
-| Python（axengine） | offline | 0.0096 | 258.6 |
-| **C++ `--threads 8`** | **offline** | **0.0066** | **177~180** |
-| Python（axengine） | low latency | 0.189 | 90.6 |
-| **C++ `--threads 8`** | **low latency** | **0.179** | **85.9** |
+| Python（axengine） | offline NPU3 | 0.0096 | 258.6 |
+| **C++ `--threads 8`** | **offline NPU3** | **0.0066** | **177~180** |
+| C++ `--threads 8` | offline NPU2 | 0.0075 | 201 |
+| Python（axengine） | low latency NPU3 | 0.189 | 90.6 |
+| **C++ `--threads 8`** | **low latency NPU3** | **0.179** | **85.9** |
+| C++ `--threads 8` | low latency NPU2 | 0.338 | 162 |
+
+NPU2 版（`models/*_npu2.axmodel`）留出 1 个 NPU 核给其他模型并跑；输出与 NPU3 逐帧
+一致（maxdiff 0）。用法：把 `--preencode/--encoder` 换成 `*_npu2.axmodel` 即可。
 
 ES2004a（1049 s）：C++ offline 总耗时 6.97 s（其中 NPU encoder 6.76 s、mel 2.99 s
 与 NPU 重叠），编译期 `max_cycle = 168.9 M`（≈211 ms @800 MHz）与实测吻合。

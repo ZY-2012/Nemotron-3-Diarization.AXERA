@@ -12,6 +12,7 @@
 | `models/encoder.axmodel` | offline：spkcache 264 + fifo 40 + chunk 380（U16/S8，121 MB） |
 | `models/preencode_lowlat.axmodel` | mel → chunk embedding，低延迟档（U16/S8） |
 | `models/encoder_lowlat.axmodel` | 低延迟：spkcache 264 + fifo 264 + chunk 10（U16/S8，111 MB） |
+| `models/*_npu2.axmodel` | 以上 4 图的 NPU2（双核）编译版（114~121 MB），输出逐帧一致 |
 | `models/learnable_sil_emb.npy` | AOSC 压缩用可学习静音嵌入（512） |
 | `models/feature_window.npy` | 检查点内量化后的 400 点 hann 窗（必须复用） |
 | `models/mel_filterbank.npy` | 检查点内量化后的 128×257 mel 滤波器组 |

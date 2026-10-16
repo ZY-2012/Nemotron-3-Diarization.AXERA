@@ -1,0 +1,48 @@
+{
+  "input": "/workspace/export_lowlat/preencode.onnx",
+  "output_dir": "/workspace/compile",
+  "output_name": "preencode_lowlat_npu2.axmodel",
+  "work_dir": "/workspace/compile/work_preencode_lowlat_npu2",
+  "model_type": "ONNX",
+  "target_hardware": "AX650",
+  "npu_mode": "NPU2",
+  "input_shapes": "chunk:1x80x128",
+  "onnx_opt": {
+    "disable_onnx_optimization": false,
+    "enable_onnxsim": false,
+    "model_check": true
+  },
+  "quant": {
+    "calibration_method": "MinMax",
+    "input_configs": [
+      {
+        "tensor_name": "chunk",
+        "calibration_dataset": "/workspace/calib_data_lowlat/chunk.tar.gz",
+        "calibration_format": "Numpy",
+        "calibration_size": 64,
+        "calibration_mean": [],
+        "calibration_std": []
+      }
+    ],
+    "layer_configs": [
+      {
+        "startTensorNames": [
+          "DEFAULT"
+        ],
+        "endTensorNames": [
+          "DEFAULT"
+        ],
+        "dataType": "U16",
+        "weightDataType": "S8",
+        "outputDataType": "U16"
+      }
+    ],
+    "highest_mix_precision": false,
+    "precision_analysis": true,
+    "precision_analysis_method": "EndToEnd",
+    "precision_analysis_mode": "Reference"
+  },
+  "compiler": {
+    "check": 0
+  }
+}

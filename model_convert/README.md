@@ -102,7 +102,11 @@ bash compile.sh        # 编译 preencode + encoder
 ```
 
 量化配置：U16 激活 / S8 权重、MinMax、真实会议状态校准；逐算子精度
-（`parse_precision.py`）encoder min cosine ≥0.99。
+（`parse_precision.py`）encoder min cosine ≥0.99（NPU2/NPU3 两版的量化结果相同）。
+
+**NPU2（双核）版本**：与 NPU3 完全相同的配置，仅 `npu_mode` 改为 `NPU2`，
+输出名/工作目录加 `_npu2` 后缀——`pulsar2_{preencode,encoder,preencode_lowlat,encoder_lowlat}_npu2.json`。
+输出与 NPU3 版逐帧一致（maxdiff 0），单步更慢，用于给同芯片其他模型留 1 个 NPU 核。
 
 ### ⑤b 低延迟档（~0.8 s，可选）
 

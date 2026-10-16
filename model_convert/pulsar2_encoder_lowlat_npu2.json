@@ -1,0 +1,56 @@
+{
+  "input": "/workspace/export_lowlat/encoder.onnx",
+  "output_dir": "/workspace/compile",
+  "output_name": "encoder_lowlat_npu2.axmodel",
+  "work_dir": "/workspace/compile/work_encoder_lowlat_npu2",
+  "model_type": "ONNX",
+  "target_hardware": "AX650",
+  "npu_mode": "NPU2",
+  "input_shapes": "seq:1x538x512,total_lengths:1",
+  "onnx_opt": {
+    "disable_onnx_optimization": false,
+    "enable_onnxsim": false,
+    "model_check": true
+  },
+  "quant": {
+    "calibration_method": "MinMax",
+    "input_configs": [
+      {
+        "tensor_name": "seq",
+        "calibration_dataset": "/workspace/calib_data_lowlat/seq.tar.gz",
+        "calibration_format": "Numpy",
+        "calibration_size": 64,
+        "calibration_mean": [],
+        "calibration_std": []
+      },
+      {
+        "tensor_name": "total_lengths",
+        "calibration_dataset": "/workspace/calib_data_lowlat/total_lengths.tar.gz",
+        "calibration_format": "Numpy",
+        "calibration_size": 64,
+        "calibration_mean": [],
+        "calibration_std": []
+      }
+    ],
+    "layer_configs": [
+      {
+        "startTensorNames": [
+          "DEFAULT"
+        ],
+        "endTensorNames": [
+          "DEFAULT"
+        ],
+        "dataType": "U16",
+        "weightDataType": "S8",
+        "outputDataType": "U16"
+      }
+    ],
+    "highest_mix_precision": false,
+    "precision_analysis": true,
+    "precision_analysis_method": "EndToEnd",
+    "precision_analysis_mode": "Reference"
+  },
+  "compiler": {
+    "check": 0
+  }
+}

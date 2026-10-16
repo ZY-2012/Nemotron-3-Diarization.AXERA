@@ -1,0 +1,14 @@
+# 模型转换（host）
+numpy>=1.21
+onnx>=1.14
+onnxruntime>=1.15
+onnxsim
+# 基线与评测（另需 NeMo Speech 仓库环境，见 README）
+# torch>=2.7
+# nemo_toolkit[asr]
+# pyannote.metrics>=3.2
+
+# 板端推理
+# numpy>=1.21
+# soundfile>=0.12
+# axengine（AX650N 镜像内置）

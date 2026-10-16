@@ -1,0 +1,28 @@
+__pycache__/
+*.pyc
+.venv/
+.tmp/
+.tmp_*/
+.magnetarrc
+# 生成产物（本地可再生）
+export/
+export*/
+compile/
+baseline/
+manifests/
+out/
+out*/
+lowlat/
+calib_data*/
+# 模型与权重
+*.onnx
+*.axmodel
+*.nemo
+*.ckpt
+models/*
+!models/README.md
+# 编译产物
+cpp/bin/
+cpp/build_ax650/
+cpp/build_host/
+cpp/toolchains/
